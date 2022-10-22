@@ -72,6 +72,18 @@ the helm plugin
 repoServer:
   clusterAdminAccess:
     enabled: true
+  clusterRoleRules:
+    # -- Enable custom rules for the Repo server's Cluster Role resource
+    enabled: false
+    # -- List of custom rules for the Repo server's Cluster Role resource
+    rules:
+    - apiGroups:
+      - '*'
+      resources:
+      - '*'
+      verbs:
+      - 'list'
+      - 'get'
   env:
     - name: HELM_PLUGINS
       value: /custom-tools/helm-plugins/
@@ -80,15 +92,6 @@ repoServer:
 
   serviceAccount:
     create: true
-
-  rbac:
-    - apiGroups:
-        - "*"
-      resources:
-        - "*"
-      verbs:
-        - list
-        - get
 
   volumes:
     - name: custom-tools
