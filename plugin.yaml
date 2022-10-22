@@ -1,0 +1,8 @@
+name: "kubectl"
+version: "1.0.0"
+description: |-
+  Helm plugin to support the helm lookup function in ArgoCD
+downloaders:
+  - command: "plugin.sh"
+    protocols:
+      - "kubectl"
