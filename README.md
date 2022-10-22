@@ -102,14 +102,14 @@ repoServer:
       image: alpine:latest
       command: [sh, -ec]
       env:
-        - name: HELM_SECRETS_VERSION
+        - name: HELM_KUBECTL_VERSION
           value: "1.0.0"
         - name: KUBECTL_VERSION
           value: "1.24.3"
       args:
         - |
           mkdir -p /custom-tools/helm-plugins
-          wget -qO- https://github.com/jkroepke/helm-kubectl/releases/download/v${HELM_SECRETS_VERSION}/helm-kubectl.tar.gz | tar -C /custom-tools/helm-plugins -xzf-;
+          wget -qO- https://github.com/jkroepke/helm-kubectl/releases/download/v${HELM_KUBECTL_VERSION}/helm-kubectl.tar.gz | tar -C /custom-tools/helm-plugins -xzf-;
           wget -qO /custom-tools/kubectl https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl
 
           chmod +x /custom-tools/*
