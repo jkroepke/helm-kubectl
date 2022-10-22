@@ -1,0 +1,33 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Package helm-kubectl
+        run: tar --transform 's,^,helm-kubectl/,' --exclude=contrib --exclude=examples --exclude=tests --exclude=helm-kubectl.tar.gz -zcvf helm-kubectl.tar.gz *
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'rc') }}
+          files: helm-kubectl.tar.gz
+          body: |-
+            # CHANGELOG
+
+            * https://github.com/jkroepke/helm-kubectl/blob/${{ github.ref_name }}/CHANGELOG.md
