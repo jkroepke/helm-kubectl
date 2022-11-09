@@ -10,10 +10,10 @@ fragments="${4##kubectl://}"
 
 ignore_errors=false
 
-namespace="$(echo "${fragments}" | cut -d/ -f1)"
-kind="$(echo "${fragments}" | cut -d/ -f2)"
-name="$(echo "${fragments}" | cut -d/ -f3)"
-output="$(echo "${fragments}" | cut -d/ -f4-)"
+namespace="$(printf '%s' "${fragments}" | cut -d/ -f1)"
+kind="$(printf '%s' "${fragments}" | cut -d/ -f2)"
+name="$(printf '%s' "${fragments}" | cut -d/ -f3)"
+output="$(printf '%s' "${fragments}" | cut -d/ -f4-)"
 
 if [ "${namespace##\?}" != "${namespace}" ]; then
   namespace="${namespace##\?}"
@@ -21,9 +21,9 @@ if [ "${namespace##\?}" != "${namespace}" ]; then
 fi
 
 if [ "${ignore_errors}" = "false" ]; then
-  exec "${HELM_KUBECTL_KUBECTL_PATH:-kubectl}" get ${namespace:+-n "${namespace}"} "${kind}" "${name}" -o "${output:-json}"
+  exec "${HELM_KUBECTL_KUBECTL_PATH:-kubectl}" get ${namespace:+-n "${namespace}"} "${kind}" ${name:-} -o "${output:-json}"
 else
-  if ! "${HELM_KUBECTL_KUBECTL_PATH:-kubectl}" get ${namespace:+-n "${namespace}"} "${kind}" "${name}" -o "${output:-json}" 2>/dev/null; then
+  if ! "${HELM_KUBECTL_KUBECTL_PATH:-kubectl}" get ${namespace:+-n "${namespace}"} "${kind}" ${name:-} -o "${output:-json}" 2>/dev/null; then
     :
   fi
 fi
