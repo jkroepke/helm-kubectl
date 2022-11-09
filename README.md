@@ -20,14 +20,14 @@ Output transformation (like base64 for secrets) can be archived through helm tem
 For cluster-wide resources, omit the namespace but keep the slashes. For example:
 
 ```bash
-helm template <chart-name> --set-file=valuesKey=--set-file=hello=kubectl:///namespace/default
+helm template <chart-name> --set-file=valuesKey=kubectl:///namespace/default
 ```
 
 To get a certain value form the kubernetes manifest, the output can be modified through `kubectl` output parameter. 
 You can use [JSONPath](https://kubernetes.io/docs/reference/kubectl/jsonpath/) to grab a specific key, e.g.
 
 ```bash
-helm template <chart-name> --set-file=valuesKey=--set-file='hello=kubectl://default/secret/mysql/jsonpath={.data.rootPassword}'
+helm template <chart-name> --set-file='valuesKey=kubectl://default/secret/mysql/jsonpath={.data.rootPassword}'
 ```
 
 ### Ignore errors
