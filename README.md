@@ -30,6 +30,22 @@ You can use [JSONPath](https://kubernetes.io/docs/reference/kubectl/jsonpath/) t
 helm template <chart-name> --set-file='valuesKey=kubectl://default/secret/mysql/jsonpath={.data.rootPassword}'
 ```
 
+### Backslash support
+
+Backslash needs to be repeated 4 times to ensured the reached the kubectl command.
+
+Example:
+
+```bash
+kubectl get nodes -o "jsonpath={.items[*].metadata.labels.kubernetes\.io/os}{'\n'}"
+```
+
+becomes:
+
+```bash
+helm template values --set-file="resources.requests.cpu=kubectl:///nodes//jsonpath={.items[*].metadata.labels.kubernetes\\\\.io/os}{'\\\\n'}"
+```
+
 ### Ignore errors
 
 To ignore errors (e.g. not found), put a question mark after the protocol scheme, e.g.:
@@ -44,11 +60,16 @@ kind: Application
 metadata:
   name: app
 spec:
+  project: default
   source:
+    repoURL: https://github.com/jkroepke/helm-kubectl
     helm:
       fileParameters:
         - name: mysql.rootPassword
           path: kubectl://?default/secret/mysql/jsonpath={.data.rootPassword}
+  destination:
+    name: kubernetes
+    namespace: default
 ```
 
 
