@@ -23,9 +23,9 @@ name="$(printf '%s' "${fragments}" | cut -d/ -f3)"
 labels="$(printf '%s' "${fragments}" | cut -d/ -f4)"
 output="$(printf '%s' "${fragments}" | cut -d/ -f5-)"
 
-label_list="$(printf '%s' "${labels}" | cut -d'\' -f1)"
-label_IFS="$(printf '%s' "${labels}" | cut -d'\' -f2)"
-label_method="$(printf '%s' "${labels}" | cut -d'\' -f3-)"
+label_list="$(printf '%s' "${labels}" | cut -d'|' -f1)"
+label_IFS="$(printf '%s' "${labels}" | cut -d'|' -f2)"
+label_method="$(printf '%s' "${labels}" | cut -d'|' -f3-)"
 label_method_command="$(printf '%s' "${label_method}" | cut -d? -f1)"
 label_method_args="$(printf '%s' "${label_method}" | cut -d? -f2-)"
 
@@ -47,7 +47,7 @@ set -e
 if [[ "$code" == 0 ]]; then
 	case $label_method_command in
 	"" | all)
-		echo $result
+		printf '%s' $result
 		;;
 	same)
 		items=()
@@ -65,9 +65,9 @@ if [[ "$code" == 0 ]]; then
 					fi
 				fi
 			done
-			echo "${first_item}"
+			printf '%s' "${first_item}"
 		else
-			echo $result
+			printf '%s' $result
 		fi
 		;;
 	get)
@@ -76,7 +76,7 @@ if [[ "$code" == 0 ]]; then
 			items+=($item)
 		done
 		if (( $label_method_args <= ${#items[@]} )); then
-			echo "${items[$label_method_args]}"
+			printf '%s' "${items[$label_method_args]}"
 		elif [ "${ignore_errors}" = "true" ]; then exit 0;
 		else
 			echo "Index ${label_method_args} out of range for the output list length ${#items[@]}. Please check your output '${output}'." 1>&2;
