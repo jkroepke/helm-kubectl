@@ -83,6 +83,12 @@ helm template <chart-name> --set-file="valuesKey=kubectl:///nodes//argocd=true| 
 
 The `<label-IFS>` tells the API how to read the string output (of the kubectl command) as a sentence of matches. By default, the IFS is set to `\n\t` so `\n` or `\t` in the output defines a new match. Be careful when defining your `<output>` and `<label-IFS>`. Always best to give a try upstream with `kubectl`.
 
+/!\ Important note: the label API can be used without the label feature, so without providing a `<label-list>`. For example:
+
+```bash
+helm template <chart-name> --set-file="valuesKey=kubectl:///nodes//| |same/jsonpath={.items[*].metadata.labels.kubernetes\\\\.io/os}"
+#linux     # Returned by executed 'kubectl ... jsonpath'. From the previous example, all matches have the same os so it successfully returns the label value
+```
 
 ### Ignore errors
 
