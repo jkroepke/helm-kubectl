@@ -75,7 +75,7 @@ if [[ "$code" == 0 ]]; then
 		for item in $result; do
 			items+=($item)
 		done
-		if (( $label_method_args <= ${#items[@]} )); then
+		if (( $label_method_args >=0  )) && (( $label_method_args < ${#items[@]} )); then
 			printf '%s' "${items[$label_method_args]}"
 		elif [ "${ignore_errors}" = "true" ]; then exit 0;
 		else
