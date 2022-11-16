@@ -65,23 +65,24 @@ The example above gets all the `kubernetes.io/os` labels of the nodes having the
 
 Sometimes when using the label feature, this is not convenient to deal with all matches and we want a specific behavior as extracting a single value, so an API has been implemented.
 
-`all` (or empty sting): preserve all matches.
+`all` (or empty sting): preserve all matches. See example in upper section.
 
 `get?n`: get the nth match. Element's index starts from 0. An error occurs if the index is out of range.
-
-`same`: makes sure that all elements are equals. If yes it returns the element, or an error occurs otherwise. With the example above, if the `helm template` command is used to install argocd, it can be used to make sure that argocd is installed on nodes having the same operating system, and fetching the value of this operating system.
 
 ```bash
 helm template <chart-name> --set-file="valuesKey=kubectl:///nodes//argocd=true| |get?0/jsonpath={.items[*].metadata.labels.kubernetes\\\\.io/os}"
 #linux     # Returned by executed 'kubectl ... jsonpath'. Keeps only index '0' from the previous example
 ```
 
-The `<label-IFS>` tells the API how to read the string output (of the kubectl command) as a sentence of matches. By default, the IFS is set to `\n\t` so `\n` or `\t` in the output defines a new match. Be careful when defining your `<output>` and `<label-IFS>`. Always best to give a try upstream with `kubectl`.
+`same`: makes sure that all elements are equals. If yes it returns the element, or an error occurs otherwise. With the example below, if the `helm template` command is used to install argocd, it can be used to make sure that argocd is installed on nodes having the same operating system, and fetching the value of this operating system.
 
 ```bash
 helm template <chart-name> --set-file="valuesKey=kubectl:///nodes//argocd=true| |same/jsonpath={.items[*].metadata.labels.kubernetes\\\\.io/os}"
 #linux     # Returned by executed 'kubectl ... jsonpath'. From the previous example, all matches have the same os so it successfully returns the label value
 ```
+
+The `<label-IFS>` tells the API how to read the string output (of the kubectl command) as a sentence of matches. By default, the IFS is set to `\n\t` so `\n` or `\t` in the output defines a new match. Be careful when defining your `<output>` and `<label-IFS>`. Always best to give a try upstream with `kubectl`.
+
 
 ### Ignore errors
 
@@ -103,7 +104,7 @@ spec:
     helm:
       fileParameters:
         - name: mysql.rootPassword
-          path: kubectl://?default/secret//mysql/jsonpath={.data.rootPassword}
+          path: kubectl://?default/secret/mysql//jsonpath={.data.rootPassword}
   destination:
     name: kubernetes
     namespace: default
